@@ -134,9 +134,14 @@ void create_cell_types( void )
 
 	// ----- SBML --------
 #ifdef LIBROADRUNNER
+	// extern SBMLDocument_t *sbml_doc;
+	rrc::RRVectorPtr vptr;
+    rrc::RRCDataPtr result;  // start time, end time, and number of points
+
+
 	std::cout << "------------->>>>>  Creating rrHandle, loadSBML file\n\n";
-	// std::cerr << "------------->>>>>  SBML file = " << cell_type_param.sbml_filename << std::endl;
-	// std::cerr << "------------->>>>>  SBML file = " << get_cell_definition("lung epithelium").sbml_filename << std::endl;
+	// std::cout << "------------->>>>>  SBML file = " << cell_type_param.sbml_filename << std::endl;
+	// std::cout << "------------->>>>>  SBML file = " << get_cell_definition("lung epithelium").sbml_filename << std::endl;
 	std::cout << "------------->>>>>  SBML file = " << get_cell_definition("DC").sbml_filename << std::endl;
 	rrc::RRHandle rrHandle = createRRInstance();
 	// cell_defaults.phenotype.motility.persistence_time = parameters.doubles("persistence_time"); 
@@ -146,7 +151,7 @@ void create_cell_types( void )
 	// if (!rrc::loadSBML (rrHandle, get_cell_definition("lung epithelium").sbml_filename.c_str())) {
 	if (!rrc::loadSBML (rrHandle, get_cell_definition("DC").sbml_filename.c_str())) 
     {
-		std::cerr << "------------->>>>>  Error while loading SBML file  <-------------\n\n";
+		std::cout << "------------->>>>>  Error while loading SBML file  <-------------\n\n";
 	// 	printf ("Error message: %s\n", getLastError());
 	// 	getchar ();
 		exit (0);
@@ -157,6 +162,29 @@ void create_cell_types( void )
         std::cout << "rrc::getFloatingSpeciesIds is NULL" << std::endl;
         exit (0);
     }
+
+    	// pC->phenotype.molecular.model_rr = rrHandle;  // assign the intracellular model to each cell
+	int r = rrc::getNumberOfReactions(rrHandle);
+	int m = rrc::getNumberOfFloatingSpecies(rrHandle);
+	int b = rrc::getNumberOfBoundarySpecies(rrHandle);
+	int p = rrc::getNumberOfGlobalParameters(rrHandle);
+	int c = rrc::getNumberOfCompartments(rrHandle);
+
+	std::cout << "Number of reactions = " << r << std::endl;
+	std::cout << "Number of floating species = " << m << std::endl;  // 4
+	std::cout << "Number of boundary species = " << b << std::endl;  // 0
+	std::cout << "Number of compartments = " << c << std::endl;  // 1
+
+	std::cout << "Floating species names:\n";
+	std::cout << "-----------------------\n";
+	std::cout << stringArrayToString(rrc::getFloatingSpeciesIds(rrHandle)) <<"\n"<< std::endl;
+
+	vptr = rrc::getFloatingSpeciesConcentrations(rrHandle);
+	std::cout << vptr->Count << std::endl;
+	for (int kdx=0; kdx<vptr->Count; kdx++)
+		std::cout << kdx << ") " << vptr->Data[kdx] << std::endl;
+
+
     idx_species_D = find_SBML_species_index(ids, "D");
     std::cout << "  idx_species_D = " << idx_species_D << std::endl;
     idx_species_Dm = find_SBML_species_index(ids, "Dm");
@@ -762,7 +790,7 @@ int find_SBML_species_index(rrc::RRStringArrayPtr ids, std::string species_name)
             return idx;
         }
     }
-    std::cerr << "find_SBML_species_index(): Could not find SBML species: " << species_name << std::endl;
+    std::cout << "find_SBML_species_index(): Could not find SBML species: " << species_name << std::endl;
     exit(1);
 }
 
@@ -772,14 +800,14 @@ void assign_SBML_model( Cell* pC )
 	rrc::RRVectorPtr vptr;
     rrc::RRCDataPtr result;  // start time, end time, and number of points
 
-	std::cerr << "------------->>>>>  Creating rrHandle, loadSBML file\n\n";
-	// std::cerr << "------------->>>>>  SBML file = " << cell_type_param.sbml_filename << std::endl;
-	std::cerr << "------------->>>>>  SBML file = " << get_cell_definition("lung epithelium").sbml_filename << std::endl;
+	std::cout << "------------->>>>>  Creating rrHandle, loadSBML file\n\n";
+	// std::cout << "------------->>>>>  SBML file = " << cell_type_param.sbml_filename << std::endl;
+	std::cout << "------------->>>>>  SBML file = " << get_cell_definition("lung epithelium").sbml_filename << std::endl;
 	rrc::RRHandle rrHandle = createRRInstance();
 	// cell_defaults.phenotype.motility.persistence_time = parameters.doubles("persistence_time"); 
 	// if (!rrc::loadSBML (rrHandle, "../Toy_Model_for_PhysiCell_1.xml")) {
 	if (!rrc::loadSBML (rrHandle, get_cell_definition("lung epithelium").sbml_filename.c_str())) {
-		std::cerr << "------------->>>>>  Error while loading SBML file  <-------------\n\n";
+		std::cout << "------------->>>>>  Error while loading SBML file  <-------------\n\n";
 	// 	printf ("Error message: %s\n", getLastError());
 	// 	getchar ();
 	// 	exit (0);
@@ -791,18 +819,18 @@ void assign_SBML_model( Cell* pC )
 	int p = rrc::getNumberOfGlobalParameters(rrHandle);
 	int c = rrc::getNumberOfCompartments(rrHandle);
 
-	std::cerr << "Number of reactions = " << r << std::endl;
-	std::cerr << "Number of floating species = " << m << std::endl;  // 4
-	std::cerr << "Number of boundary species = " << b << std::endl;  // 0
-	std::cerr << "Number of compartments = " << c << std::endl;  // 1
+	std::cout << "Number of reactions = " << r << std::endl;
+	std::cout << "Number of floating species = " << m << std::endl;  // 4
+	std::cout << "Number of boundary species = " << b << std::endl;  // 0
+	std::cout << "Number of compartments = " << c << std::endl;  // 1
 
-	std::cerr << "Floating species names:\n";
-	std::cerr << "-----------------------\n";
-	std::cerr << stringArrayToString(rrc::getFloatingSpeciesIds(rrHandle)) <<"\n"<< std::endl;
+	std::cout << "Floating species names:\n";
+	std::cout << "-----------------------\n";
+	std::cout << stringArrayToString(rrc::getFloatingSpeciesIds(rrHandle)) <<"\n"<< std::endl;
 
 	vptr = rrc::getFloatingSpeciesConcentrations(rrHandle);
-	std::cerr << vptr->Count << std::endl;
+	std::cout << vptr->Count << std::endl;
 	for (int kdx=0; kdx<vptr->Count; kdx++)
-		std::cerr << kdx << ") " << vptr->Data[kdx] << std::endl;
+		std::cout << kdx << ") " << vptr->Data[kdx] << std::endl;
 }
 #endif
