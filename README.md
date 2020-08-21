@@ -4,16 +4,16 @@ Integrate immune response (ODE) with PhysiCell
 
 * to test without the SBML model, compile with `make` and run `COVID19` to see the dummy `lymphatic_main_model` being invoked. Files of interest are `custom_modules/lymphatic_submodel.{h,cpp}` and `main.cpp`.
 
-* to test with the SBML model, compile with `make -f Make-sbml` and run `COVID19_sbml config_with_sbml.xml`. However, we still need to make meaningful mappings between the SBML species and PhysiCell cells' custom data.
+* to test with the SBML model, compile with `make -f Make-sbml` and run `COVID19_sbml config_with_sbml.xml`. Note that `Make-sbml` defines the compiler macro `-D LIBROADRUNNER` which allows for conditional compilation of `#ifdef LIBROADRUNNER` code (rf. `intracellular/PhysiCell_intracellular.h`). However, we still need to make meaningful mappings between the SBML species and PhysiCell cells' custom data and, of course, do something meaningful in the custom code.
 
-## Changes from original 3.2 code
+## Changes from original 3.2 code (and latest immune-response model)
 * added `custom_modules/lymphatic_submodel.{h,cpp}`
 
 Not yet using, but also:
 * added `beta/setup_libroadrunner.py`
 * added `intracellular/PhysiCell_intracellular.h`
 * added `std::string sbml_filename;` into `class Cell_Definition` (in `core/PhysiCell_cell.h`)
-* parse `<molecular>` XML in `core/PhysiCell_cell.cpp`
+* parse `<molecular>` XML in `core/PhysiCell_cell.cpp` 
 * incorporate intracellular (SBML, libRoadrunner) info into `custom.{h,cpp}`
   * see `assign_SBML_model( Cell* pC )` in `custom.cpp`
   * see extra code in `create_cell_types( void )` where we obtain the desired SBML species' indices.
