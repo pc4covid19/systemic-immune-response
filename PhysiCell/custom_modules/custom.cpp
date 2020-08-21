@@ -67,6 +67,8 @@
 
 #include "./custom.h"
 
+static int idx_species_D;
+
 void create_cell_types( void )
 {
 	// set the random seed 
@@ -96,9 +98,6 @@ void create_cell_types( void )
 	*/
 	
 	initialize_cell_definitions_from_pugixml(); 
-
-	// SBML-related
-	// energy_cell_idx = cell_defaults.custom_data.find_variable_index( "energy" );
 
 	/* 
 	   Put any modifications to individual cell definitions here. 
@@ -130,7 +129,7 @@ void create_cell_types( void )
 		
 	build_cell_definitions_maps(); 
 	display_cell_definitions( std::cout ); 
-	
+
 	// ----- SBML --------
 #ifdef LIBROADRUNNER
 	std::cerr << "------------->>>>>  Creating rrHandle, loadSBML file\n\n";
@@ -141,7 +140,8 @@ void create_cell_types( void )
 	// if (!rrc::loadSBML (rrHandle, "../Toy_Model_for_PhysiCell_1.xml")) {
 
 	// Cell_Definition* pCD = find_cell_definition( "lung epithelium" ); 
-	if (!rrc::loadSBML (rrHandle, get_cell_definition("lung epithelium").sbml_filename.c_str())) {
+	// if (!rrc::loadSBML (rrHandle, get_cell_definition("lung epithelium").sbml_filename.c_str())) {
+	if (!rrc::loadSBML (rrHandle, get_cell_definition("DC").sbml_filename.c_str())) {
 		std::cerr << "------------->>>>>  Error while loading SBML file  <-------------\n\n";
 	// 	printf ("Error message: %s\n", getLastError());
 	// 	getchar ();
@@ -152,10 +152,10 @@ void create_cell_types( void )
           std::cerr << "NULL" << std::endl;
         }
         std::cout << "debug: A" << std::endl;
-        glucose_sbml_species_idx = find_species_id_index_or_die(ids, "Glucose");
-        oxygen_sbml_species_idx = find_species_id_index_or_die(ids, "Oxygen");
+        // glucose_sbml_species_idx = find_species_id_index_or_die(ids, "Glucose");
+        // oxygen_sbml_species_idx = find_species_id_index_or_die(ids, "Oxygen");
 #endif // LIBROADRUNNER
-
+	
 	return; 
 }
 
@@ -287,9 +287,9 @@ void setup_tissue( void )
 			pC = create_cell( get_cell_definition("lung epithelium" ) ); 
 			pC->assign_position( x,y, 0.0 );
 
-#ifdef LIBROADRUNNER
-			assign_SBML_model( pC );
-#endif
+// #ifdef LIBROADRUNNER
+// 			assign_SBML_model( pC );
+// #endif
 			
 			double dx = x - center_x;
 			double dy = y - center_y; 
@@ -432,6 +432,7 @@ std::vector<std::string> tissue_coloring_function( Cell* pCell )
 	static int CD8_Tcell_type = get_cell_definition( "CD8 Tcell" ).type; 
 	static int Macrophage_type = get_cell_definition( "macrophage" ).type; 
 	static int Neutrophil_type = get_cell_definition( "neutrophil" ).type; 
+	static int DC_type = get_cell_definition( "DC" ).type; 
 	
 	// start with white 
 	
@@ -474,6 +475,8 @@ std::vector<std::string> tissue_coloring_function( Cell* pCell )
 		std::string color = parameters.strings("Macrophage_color");  
 		if( pCell->custom_data["activated_immune_cell" ] > 0.5 )
 		{ color = parameters.strings("activated_macrophage_color"); }
+	if( pCell->phenotype.volume.total> pCell->custom_data["threshold_macrophage_volume"] )// macrophage exhausted
+		{ color = parameters.strings("exhausted_macrophage_color"); }
 		
 		output[0] = color; 
 		output[2] = output[0];
@@ -484,6 +487,14 @@ std::vector<std::string> tissue_coloring_function( Cell* pCell )
 	if( pCell->phenotype.death.dead == false && pCell->type == Neutrophil_type )
 	{
 		output[0] = parameters.strings("Neutrophil_color");  
+		output[2] = output[0];
+		output[3] = output[0];
+		return output; 
+	}
+	
+	if( pCell->phenotype.death.dead == false && pCell->type == DC_type )
+	{
+		output[0] = parameters.strings("DC_color");  
 		output[2] = output[0];
 		output[3] = output[0];
 		return output; 

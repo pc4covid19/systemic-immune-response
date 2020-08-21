@@ -53,6 +53,10 @@ void macrophage_mechanics( Cell* pCell, Phenotype& phenotype, double dt );
 void neutrophil_phenotype( Cell* pCell, Phenotype& phenotype, double dt ); 
 void neutrophil_mechanics( Cell* pCell, Phenotype& phenotype, double dt ); 
 
+// (Adrianne) DC phenotype and mechanics functions
+void DC_phenotype( Cell* pCell, Phenotype& phenotype, double dt ); 
+void DC_mechanics( Cell* pCell, Phenotype& phenotype, double dt ); 
+
 
 // this damage response will need to be added to the "infected cell response" model 
 // void TCell_induced_apoptosis( Cell* pCell, Phenotype& phenotype, double dt ); 

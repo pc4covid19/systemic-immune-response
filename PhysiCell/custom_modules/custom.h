@@ -76,8 +76,6 @@
 #include "./epithelium_submodel.h" 
 #include "./lymphatic_submodel.h" 
 
-#include "../intracellular/PhysiCell_intracellular.h" 
-
 using namespace BioFVM; 
 using namespace PhysiCell;
 
