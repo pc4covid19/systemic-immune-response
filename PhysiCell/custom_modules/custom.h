@@ -71,12 +71,10 @@
 #include "./submodel_data_structures.h" 
 #include "./internal_viral_dynamics.h"
 #include "./internal_viral_response.h" 
+#include "./external_immune.h"
 #include "./receptor_dynamics.h" 
 #include "./immune_submodels.h" 
 #include "./epithelium_submodel.h" 
-#include "./lymphatic_submodel.h" 
-
-#include "../intracellular/PhysiCell_intracellular.h" 
 
 using namespace BioFVM; 
 using namespace PhysiCell;
@@ -100,8 +98,3 @@ std::vector<std::string> tissue_coloring_function( Cell* );
 void move_exported_to_viral_field( void ); 
 
 void SVG_plot_virus( std::string filename , Microenvironment& M, double z_slice , double time, std::vector<std::string> (*cell_coloring_function)(Cell*) );
-
-#ifdef LIBROADRUNNER
-void assign_SBML_model( Cell* pC );
-int find_SBML_species_index(rrc::RRStringArrayPtr ids, std::string species_name);
-#endif
