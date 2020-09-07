@@ -35,11 +35,11 @@ void external_immune_model( double dt )
 	extern double DM;
 	extern double TC;
 	static double dC = parameters.doubles( "TC_death_rate" ); 
-	static double pT1 = parameters.doubles( "max_activation_TC" ); 
-	static double pT2 = parameters.doubles( "half_max_activation_TC" ); 
+	static double pT1 = parameters.doubles( "max_activation_TC" ) * 1000; 
+	static double pT2 = parameters.doubles( "half_max_activation_TC" )/10; 
 	static double dT1 = parameters.doubles( "max_clearance_TC" ); 
-	static double dT2 = parameters.doubles( "half_max_clearance_TC" ); 
-	static double Tc0 = parameters.doubles( "TC_population_threshold" ); 
+	static double dT2 = parameters.doubles( "half_max_clearance_TC" )/10; 
+	static double Tc0 = parameters.doubles( "TC_population_threshold" ) * 100; 
 	static double immunevolume = 1;
 	static double dDm = 0.5 / 1440;
 	static double addme = 0;
@@ -58,10 +58,12 @@ void external_immune_model( double dt )
 	// TC decay
 	double dR_TC14 = dt * dC * TC / immunevolume ;
 	
-	addme += dR_TC + dR_TCD - dR_TC16 - dR_TC14 + 0.01;
+	addme += dR_TC + dR_TCD - dR_TC16 - dR_TC14;
 	
-	if( addme > TC )
-	{ addme = TC; }
+	// std::cout<< addme << std::endl; //for debug
+	
+	if( addme < TC )
+	{ addme = -TC; }
 	
 	TC += addme;
 	

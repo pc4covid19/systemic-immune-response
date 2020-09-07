@@ -802,8 +802,8 @@ void DC_phenotype( Cell* pCell, Phenotype& phenotype, double dt )
 	// (Adrianne) probability of activated DC departing after activation
 	double probability_of_DC_departing = pCell->custom_data["probability_of_DC_departing"]; 
 	
-	// (Adrianne) if DC is already activated, then check whether it leaves the tissue
-	if( pCell->custom_data["activated_immune_cell"] == 1.0 && UniformRandom() < 0.01)
+	// (Adrianne) if DC is already activated, then check whether it leaves the tissue, set at ODE value from Da recuitment
+	if( pCell->custom_data["activated_immune_cell"] == 1.0 && UniformRandom() < 0.008)
 	{
 		// (Adrianne) DC leaves the tissue and so we delete that DC
 		extern double DM; //declare existance
