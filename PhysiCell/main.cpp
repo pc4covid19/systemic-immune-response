@@ -83,10 +83,10 @@
 using namespace BioFVM;
 using namespace PhysiCell;
 
+std::string COVID19_version = "0.3.2"; 
+
 double DM = 0;
 double TC = 0;
-
-std::string COVID19_version = "0.3.2"; 
 
 int main( int argc, char* argv[] )
 {
@@ -166,10 +166,13 @@ int main( int argc, char* argv[] )
 		report_file<<"simulated time\tnum cells\tnum division\tnum death\twall time"<<std::endl;
 	}
 	
+	std::ofstream dm_tc_file;
+	dm_tc_file.open ("dm_tc.dat");
+	
 	// main loop 
 
 	std::cout << std::endl << std::endl << "***** This is COVID19 integrated version " << COVID19_version << ". *****" << std::endl << std::endl; 
-	
+
 	try 
 	{		
 		while( PhysiCell_globals.current_time < PhysiCell_settings.max_time + 0.1*diffusion_dt )
@@ -186,6 +189,9 @@ int main( int argc, char* argv[] )
 				if( PhysiCell_settings.enable_full_saves == true )
 				{	
 					sprintf( filename , "%s/output%08u" , PhysiCell_settings.folder.c_str(),  PhysiCell_globals.full_output_index ); 
+
+					dm_tc_file << DM << " " << TC << std::endl;
+
 					
 					save_PhysiCell_to_MultiCellDS_xml_pugi( filename , microenvironment , PhysiCell_globals.current_time ); 
 				}

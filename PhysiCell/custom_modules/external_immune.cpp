@@ -2,7 +2,7 @@
 
 using namespace PhysiCell; 
 
-std::string external_immune_version = "0.0.1"; 
+std::string external_immune_version = "0.0.2"; 
 
 Submodel_Information external_immune_info; 
 
@@ -35,11 +35,11 @@ void external_immune_model( double dt )
 	extern double DM;
 	extern double TC;
 	static double dC = parameters.doubles( "TC_death_rate" ); 
-	static double pT1 = parameters.doubles( "max_activation_TC" ) * 1000; 
-	static double pT2 = parameters.doubles( "half_max_activation_TC" )/10; 
+	static double pT1 = parameters.doubles( "max_activation_TC" ); 
+	static double pT2 = parameters.doubles( "half_max_activation_TC" ); 
 	static double dT1 = parameters.doubles( "max_clearance_TC" ); 
-	static double dT2 = parameters.doubles( "half_max_clearance_TC" )/10; 
-	static double Tc0 = parameters.doubles( "TC_population_threshold" ) * 100; 
+	static double dT2 = parameters.doubles( "half_max_clearance_TC" ); 
+	static double Tc0 = parameters.doubles( "TC_population_threshold" ); 
 	static double immunevolume = 1;
 	static double dDm = 0.5 / 1440;
 	static double addme = 0;
@@ -50,10 +50,10 @@ void external_immune_model( double dt )
 	double dR_TC = dt * dC * Tc0 / immunevolume ;
 
 	// DM Tc recruitment
-	double dR_TCD = dt * pT1 * DM * TC / immunevolume / ( DM + pT2) ;
+	double dR_TCD = dt * pT1 * DM/immunevolume * TC/immunevolume / ( DM/immunevolume + pT2/immunevolume) ;
 	
 	// DM Tc decay
-	double dR_TC16 = dt * dT1 * DM * TC / immunevolume / ( DM + dT2) ;
+	double dR_TC16 = dt * dT1 * DM/immunevolume * TC/immunevolume / ( DM/immunevolume + dT2/immunevolume) ;
 	
 	// TC decay
 	double dR_TC14 = dt * dC * TC / immunevolume ;
@@ -62,7 +62,7 @@ void external_immune_model( double dt )
 	
 	// std::cout<< addme << std::endl; //for debug
 	
-	if( addme < TC )
+	if( addme < -TC )
 	{ addme = -TC; }
 	
 	TC += addme;

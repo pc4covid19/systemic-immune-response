@@ -1195,7 +1195,7 @@ void immune_cell_recruitment( double dt )
 		
 	
 		total_rate *= microenvironment.mesh.dV; 
-		total_rate *= CD8_Tcell_recruitment_rate*TC/10; 
+		total_rate *= CD8_Tcell_recruitment_rate*TC/500; 
 		
 		// expected number of new neutrophils 
 		number_of_new_cells = (int) round( total_rate * elapsed_time ); 
