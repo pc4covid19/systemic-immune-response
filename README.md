@@ -45,6 +45,8 @@ In [3]: print(r.getCurrentSBML())
 # --> outputs SBML which we copy/paste into immune_response.xml
 ```
 
+![Species "Tc"](/images/Tc_tellurium.png)
+
 ## COPASI
 Using COPASI, one can `File -> Import SBML` the model and examine it in various ways.
 
