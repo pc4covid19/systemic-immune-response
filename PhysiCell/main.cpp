@@ -86,7 +86,9 @@ using namespace PhysiCell;
 std::string COVID19_version = "0.3.2"; 
 
 double DM = 0;
-double TC = 0;
+double TC = 10;
+double TH1 = 1;
+double TH2 = 1;
 
 int main( int argc, char* argv[] )
 {
@@ -190,7 +192,7 @@ int main( int argc, char* argv[] )
 				{	
 					sprintf( filename , "%s/output%08u" , PhysiCell_settings.folder.c_str(),  PhysiCell_globals.full_output_index ); 
 
-					dm_tc_file << DM << " " << TC << std::endl;
+					dm_tc_file << DM << " " << TC << " " << TH1 << " " << TH2 << std::endl;
 
 					
 					save_PhysiCell_to_MultiCellDS_xml_pugi( filename , microenvironment , PhysiCell_globals.current_time ); 

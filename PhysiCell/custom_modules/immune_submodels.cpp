@@ -803,7 +803,7 @@ void DC_phenotype( Cell* pCell, Phenotype& phenotype, double dt )
 	double probability_of_DC_departing = pCell->custom_data["probability_of_DC_departing"]; 
 	
 	// (Adrianne) if DC is already activated, then check whether it leaves the tissue, set at ODE value from Da recuitment
-	if( pCell->custom_data["activated_immune_cell"] == 1.0 && UniformRandom() < 0.008)
+	if( pCell->custom_data["activated_immune_cell"] == 1.0 && UniformRandom() < 0.005) //0.008
 	{
 		// (Adrianne) DC leaves the tissue and so we delete that DC
 		extern double DM; //declare existance
@@ -1169,7 +1169,7 @@ void immune_cell_recruitment( double dt )
 		
 		// CD8 Tcell recruitment (Michael) added modifier
 		
-		static double CD8_Tcell_recruitment_rate = parameters.doubles( "CD8_Tcell_max_recruitment_rate" ); 
+		static double CD8_Tcell_recruitment_rate = parameters.doubles( "T_Cell_Recruitment" ); 
 		extern double TC; 
 		static double TC_min_signal = parameters.doubles( "CD8_Tcell_recruitment_min_signal" ); 
 		static double TC_sat_signal = parameters.doubles( "CD8_Tcell_recruitment_saturation_signal" ); 
@@ -1195,7 +1195,7 @@ void immune_cell_recruitment( double dt )
 		
 	
 		total_rate *= microenvironment.mesh.dV; 
-		total_rate *= CD8_Tcell_recruitment_rate*TC/500; 
+		total_rate *= CD8_Tcell_recruitment_rate*TC/1e5; 
 		
 		// expected number of new neutrophils 
 		number_of_new_cells = (int) round( total_rate * elapsed_time ); 

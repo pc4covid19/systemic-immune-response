@@ -34,6 +34,8 @@ void external_immune_model( double dt )
 
 	extern double DM;
 	extern double TC;
+	extern double TH1;
+	extern double TH2;
 	static double dC = parameters.doubles( "TC_death_rate" ); 
 	static double pT1 = parameters.doubles( "max_activation_TC" ); 
 	static double pT2 = parameters.doubles( "half_max_activation_TC" ); 
@@ -41,37 +43,69 @@ void external_immune_model( double dt )
 	static double dT2 = parameters.doubles( "half_max_clearance_TC" ); 
 	static double Tc0 = parameters.doubles( "TC_population_threshold" ); 
 	static double immunevolume = 1;
-	static double dDm = 0.5 / 1440;
-	static double addme = 0;
+	static double dDm = parameters.doubles( "DM_decay" );
+	static double sTh1 = 0.0007;
+	static double pTh1 = 0.0000083;
+	static double dTh1 = 7e-7;
+	static double mTh = 0.000015;
+	static double sTh2 = 0.00003;
+	static double pTh2 = 0.000002;
+	static double ro = 1;
 		
 	// actual model goes here 
 	
+	double x[4][4]={{0, 0, 0, 0}, {0, 0, 0, 0},{0, 0, 0, 0}, {0, 0, 0, 0}};//initialize x
+	double f[4][4]={{0, 0, 0, 0}, {0, 0, 0, 0},{0, 0, 0, 0}, {0, 0, 0, 0}};//initialize f
+	int j;
+	
 	// TC update
-	double dR_TC = dt * dC * Tc0 / immunevolume ;
+	double dR_TC = dC * Tc0 / immunevolume ;
 
-	// DM Tc recruitment
-	double dR_TCD = dt * pT1 * DM/immunevolume * TC/immunevolume / ( DM/immunevolume + pT2/immunevolume) ;
+/* 	// DM Tc recruitment
+	double dR_TCD = pT1 * C[0]/immunevolume * C[1]/immunevolume / ( C[0]/immunevolume + pT2/immunevolume) ;
 	
 	// DM Tc decay
-	double dR_TC16 = dt * dT1 * DM/immunevolume * TC/immunevolume / ( DM/immunevolume + dT2/immunevolume) ;
+	double dR_TC16 = dT1 * C[0]/immunevolume * C[1]/immunevolume / ( C[0]/immunevolume + dT2/immunevolume) ;
 	
 	// TC decay
-	double dR_TC14 = dt * dC * TC / immunevolume ;
-	
-	addme += dR_TC + dR_TCD - dR_TC16 - dR_TC14;
-	
-	// std::cout<< addme << std::endl; //for debug
-	
-	if( addme < -TC )
-	{ addme = -TC; }
-	
-	TC += addme;
+	double dR_TC14 = dC * C[1] / immunevolume ;
 	
 	// DM decay
-	double dR_DM = dt * dDm * DM / immunevolume;
-	if( dR_DM > DM )
-	{ dR_DM = DM; }
-	DM -= dR_DM; // decay DM
+	double dR_DM = dDm * C[0] / immunevolume; */
+	
+	
+	
+
+	x[0][0] = DM/0.001; 
+	x[0][1] = TC; //initial values
+	x[0][2] = TH1; //initial values
+	x[0][3] = TH2; //initial values
+	
+    for(j = 0; j < 4; j++){
+		f[j][0] = {-dDm*x[j][0]/immunevolume}; //define function
+        f[j][1] = {dR_TC-dC*x[j][1]/immunevolume+pT1*x[j][0]*x[j][1]/immunevolume/(x[j][0]+pT2)-dT1*x[j][0]*x[j][1]/immunevolume/(x[j][0]+dT2)};
+		f[j][2] = {sTh1*TH1/(1+TH2)+pTh1*DM*TH1*TH1/((1+TH2)*(1+TH2))-dTh1*DM*TH1*TH1*TH1/(1+TH2)-mTh*TH1}; //define function
+		f[j][3] = {sTh2*TH2/(1+TH2)+pTh2*(1+TH1)*DM*TH2*TH2/((1+TH2)*(1+TH1+TH2))-mTh*TH2}; //define function
+        if (j== 0 || j==1){
+            x[j+1][0]=x[0][0]+dt/2*f[j][0]; //first and second x approximations
+			x[j+1][1]=x[0][1]+dt/2*f[j][1]; //first and second x approximations
+			x[j+1][2]=x[0][2]+dt/2*f[j][2]; //first and second x approximations
+			x[j+1][3]=x[0][3]+dt/2*f[j][3]; //first and second x approximations
+		}
+        if (j== 2){
+            x[j+1][0]=x[0][0]+dt*f[j][0]; //third approximation
+			x[j+1][1]=x[0][1]+dt*f[j][1]; //third approximation
+			x[j+1][2]=x[0][2]+dt*f[j][2]; //third approximation
+			x[j+1][3]=x[0][3]+dt*f[j][3]; //third approximation
+		}
+    }
+
+	//std::cout << dt*(f[0][0]/6+f[1][0]/3+f[2][0]/3+f[3][0]/6) << std::endl; 
+
+	DM=(x[0][0]+dt*(f[0][0]/6+f[1][0]/3+f[2][0]/3+f[3][0]/6))*0.001;
+	TC=x[0][1]+dt*(f[0][1]/6+f[1][1]/3+f[2][1]/3+f[3][1]/6);
+	TH1=x[0][2]+dt*(f[0][2]/6+f[1][2]/3+f[2][2]/3+f[3][2]/6); //detirmine n+1
+	TH2=x[0][3]+dt*(f[0][3]/6+f[1][3]/3+f[2][3]/3+f[3][3]/6); //detirmine n+1
 	
 	return; 
 }
