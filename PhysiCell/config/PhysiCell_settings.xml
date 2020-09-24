@@ -796,14 +796,10 @@
 				description="immune cell position over the epithelium">0</immune_z_offset>
 			
 			<!-- (Michael) added parameters for external_immune-->
-<!-- 			<DM type="double" units="cells"
-				description="Active Dentrites in Lymph node">0</DM>
-			<TC type="double" units="cells"
-				description="Cytotoxic T Cells in Lymph node">0</TC> -->
 			<TC_death_rate type="double" units="cells/min"
-				description="TC death rate">0.000001</TC_death_rate>
+				description="TC death rate">0.0000014</TC_death_rate>
 			<max_activation_TC type="double" units="cells/min"
-				description="max activation TC">0.003</max_activation_TC>
+				description="max activation TC">0.0024</max_activation_TC>
 			<half_max_activation_TC type="double" units="cells"
 				description="half max activation TC">2000</half_max_activation_TC>
 			<max_clearance_TC type="double" units="cells/min"
