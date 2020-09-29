@@ -355,15 +355,6 @@ void create_infiltrating_Tcell(void)
 	return;
 }
 
-// (Adrianne) creating infiltrating DCs
-void create_infiltrating_DC(void)
-{
-	static Cell_Definition* pCD = find_cell_definition( "DC" );
-	create_infiltrating_immune_cell( pCD ); 
-	
-	return;
-}
-
 void create_infiltrating_macrophage(void)
 {
 	static Cell_Definition* pCD = find_cell_definition( "macrophage" );
@@ -882,26 +873,8 @@ void DC_phenotype( Cell* pCell, Phenotype& phenotype, double dt )
 // (Adrianne) DC mechanics function
 void DC_mechanics( Cell* pCell, Phenotype& phenotype, double dt )
 {
- 	static int debris_index = microenvironment.find_density_index( "debris");
 
-	if( phenotype.death.dead == true )
-	{
-		pCell->functions.update_phenotype = NULL;
-		pCell->functions.custom_cell_rule = NULL; 
 
-		phenotype.secretion.secretion_rates[debris_index] = pCell->custom_data["debris_secretion_rate"]; 
-		return;  
-	} 
-
-	// bounds check 
- 	if( check_for_out_of_bounds( pCell , 10.0 ) )
-	{ 
-		#pragma omp critical 
-		{ cells_to_move_from_edge.push_back( pCell ); }
-		// replace_out_of_bounds_cell( pCell, 10.0 );
-		// return; 
-	}
-	
 	return; 
 }
 void immune_submodels_setup( void )
@@ -1084,12 +1057,10 @@ Cell* immune_cell_check_neighbors_for_attachment( Cell* pAttacker , double dt )
 int recruited_Tcells = 0; 
 int recruited_neutrophils = 0; 
 int recruited_macrophages = 0; 
-int recruited_DCs = 0; 
 
 double first_macrophage_recruitment_time = 9e9; 
 double first_neutrophil_recruitment_time = 9e9; 
 double first_CD8_T_cell_recruitment_time = 9e9; 
-double first_DC_recruitment_time = 9e9; 
 
 void immune_cell_recruitment( double dt )
 {
@@ -1211,49 +1182,6 @@ void immune_cell_recruitment( double dt )
 
 			for( int n = 0; n < number_of_new_cells ; n++ )
 			{ create_infiltrating_Tcell(); }
-		}
-		
-		// (Adrianne) DC recruitment - *** This section will be changed to be Tarun's model  so I've left recruitment parameters to be CD8 cell parameters**
-		static double DC_recruitment_rate = parameters.doubles( "macrophage_max_recruitment_rate" ); 
-		static double DC_min_signal = parameters.doubles( "macrophage_recruitment_min_signal" ); 
-		static double DC_sat_signal = parameters.doubles( "macrophage_recruitment_saturation_signal" ); 
-		static double DC_max_minus_min = DC_sat_signal - DC_min_signal; 
-				
-		total_rate = 0;
-		// integrate \int_domain r_max * (signal-signal_min)/(signal_max-signal_min) * dV 
-		total_scaled_signal= 0.0;
-		for( int n=0; n<microenvironment.mesh.voxels.size(); n++ )
-		{
-			// (signal(x)-signal_min)/(signal_max/signal_min)
-			double dRate = ( microenvironment(n)[proinflammatory_cytokine_index] - DC_min_signal ); 
-			dRate /= DC_max_minus_min; 
-			// crop to [0,1] 
-			if( dRate > 1 ) 
-			{ dRate = 1; } 
-			if( dRate < 0 )
-			{ dRate = 0; }
-			total_rate += dRate; 
-		}	
-		// multiply by dV and rate_max 
-		total_scaled_signal = total_rate; 
-		
-		total_rate *= microenvironment.mesh.dV; 
-		total_rate *= DC_recruitment_rate; 
-		
-		// expected number of new neutrophils 
-		number_of_new_cells = (int) round( total_rate * elapsed_time ); 
-		recruited_DCs += number_of_new_cells;		
-		
-		
- 		if( number_of_new_cells )
-		{
-			if( t_immune < first_DC_recruitment_time )
-			{ first_DC_recruitment_time = t_immune; }
-			
-			std::cout << "\tRecruiting " << number_of_new_cells << " DCs ... " << std::endl; 
-
-			for( int n = 0; n < number_of_new_cells ; n++ )
-			{ create_infiltrating_DC(); }
 		}
 		
 		t_last_immune = t_immune; 

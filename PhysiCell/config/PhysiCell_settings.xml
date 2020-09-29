@@ -87,7 +87,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">8640</max_time> <!-- 5 days * 24 h * 60 min -->
+		<max_time units="min">8640</max_time> <!-- 8640min 5 days * 24 h * 60 min -->
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 	
@@ -363,6 +363,113 @@
 				<infected_cell_chemokine_secretion_activated units="none" type="double"
 					description="used internally to track activation of chemokine secretion">0</infected_cell_chemokine_secretion_activated>
 
+		<!-- (Sara and Fiona code) pyroptosis model constants--> 
+				<rate_NFkB_cytoplasm_to_nucleus type="double" units="1/min" 
+					description="rate of NFkB cytoplasm-to-nucleus translocation">0.3</rate_NFkB_cytoplasm_to_nucleus> 
+
+				<rate_NFkB_nucleus_to_cytoplasm type="double" units="1/min" 
+					description="rate of NFkB nucleus-to-cytoplasm translocation">0.03</rate_NFkB_nucleus_to_cytoplasm>
+
+				<rate_NLRP3_incactive_to_active type="double" units="1/min" 
+					description="NLRP3 activation rate">0.07</rate_NLRP3_incactive_to_active>
+
+				<rate_NLRP3_active_to_bound type="double" units="1/min" 
+					description="NLRP3 binding rate">0.07</rate_NLRP3_active_to_bound>
+
+				<rate_ASC_free_to_bound type="double" units="1/(min * (a.u. of concentration) )" 
+					description="NLRP3-ASC interaction rate">0.02</rate_ASC_free_to_bound>
+
+				<rate_caspase1_free_to_bound type="double" units="1/(min * (a.u. of concentration) )" 
+					description="ASC-pro-caspase1 interaction rate">0.04</rate_caspase1_free_to_bound>
+
+				<rate_Il1b_cytoplasmic_to_external type="double" units="1/min" 
+					description="Il1b cell exit rate">0.8</rate_Il1b_cytoplasmic_to_external>
+
+				<rate_Il18_cytoplasmic_to_external type="double" units="1/min" 
+					description="Il18 cell exit rate">0.8</rate_Il18_cytoplasmic_to_external>
+
+				<rate_pyroptosis_volume_increase type="double" units="1/min" 
+					description="pyroptosis-induced cytoplasmic volume increase rate">0.1</rate_pyroptosis_volume_increase>				
+
+				<decay_NLRPR_inactive_and_active type="double" units="1/min" 
+					description="NLRP3 decay rate">0.002</decay_NLRPR_inactive_and_active>	
+
+				<decay_IL1b type="double" units="1/min" 
+					description="IL1b decay rate">0.004</decay_IL1b>	
+
+				<rate_constant_NLRP3_production type="double" units="(a.u. of concentration)/min" 
+					description="NLRP3 production rate constant">0.025</rate_constant_NLRP3_production>
+
+				<rate_constant_IL1b_production type="double" units="(a.u. of concentration)/min" 
+					description="pro-IL-1b production rate constant">0.007</rate_constant_IL1b_production>
+
+				<rate_constant_GSDMD_cleavage type="double" units="min" 
+					description="rate of caspase1-induced GSDMD cleavage">0.08</rate_constant_GSDMD_cleavage>
+
+				<rate_constant_Il1b_cleavage type="double" units="min" 
+					description="rate of caspase1-induced IL-1b cleavage">0.8</rate_constant_Il1b_cleavage>
+
+				<rate_constant_Il18_cleavage type="double" units="min" 
+					description="rate of caspase1-induced IL-18 cleavage">0.8</rate_constant_Il18_cleavage>	
+
+<halfmax_caspase1_cleavage type="double" units="dimensionless" 
+					description="test">0.3</halfmax_caspase1_cleavage>	
+
+
+				
+				<halfmax_caspase1_cleavage type="double" units="a.u. of concentration" 
+					description="half-max caspase1 for cleavage">0.3</halfmax_caspase1_cleavage>
+
+				<hillexponent_NFkB_transcription type="double" units="dimensionless" 
+					description="hill exponent nuclear NFkB for transcription">2</hillexponent_NFkB_transcription>						
+
+				<hillexponent_caspase1_cleavage type="double" units="dimensionless" 
+					description="hill exponent caspase1 for cleavage">2</hillexponent_caspase1_cleavage>
+					
+		<!-- (Sara and Fiona code) pyroptosis initial conditions-->
+				<nuclear_NFkB type="double" units="a.u. of concentration"
+					description="initial nuclear NFkB concentration">0.25</nuclear_NFkB>
+
+				<inactive_NLRP3 type="double" units="a.u. of concentration"
+					description="initial concentration of inactive NLRP3">0</inactive_NLRP3>					
+
+				<active_NLRP3 type="double" units="a.u. of concentration"
+					description="initial concentration of active NLRP3">0</active_NLRP3>
+					
+				<bound_NLRP3 type="double" units="a.u. of concentration"
+					description="initial concentration of inflammasone bound">0</bound_NLRP3>					
+
+				<bound_ASC type="double" units="a.u. of concentration"
+					description="initial concentration of bound ASC">0</bound_ASC>					
+
+				<bound_caspase1 type="double" units="a.u. of concentration"
+					description="initial concentration of bound caspase1">0</bound_caspase1>
+
+				<cleaved_gasderminD type="double" units="a.u. of concentration"
+					description="initial concentration cleaved gasderminD">0</cleaved_gasderminD>	
+
+				<pro_IL_1b type="double" units="a.u. of concentration"
+					description="initial concentration pro-IL-1b">0</pro_IL_1b>	
+
+				<cytoplasmic_IL_1b type="double" units="a.u. of concentration"
+					description="initial concentration cytoplasmic IL-1b">0</cytoplasmic_IL_1b>	
+
+				<external_IL_1b type="double" units="a.u. of concentration"
+					description="initial concentration external IL-1b">0</external_IL_1b>	
+
+				<cytoplasmic_IL_18 type="double" units="a.u. of concentration"
+					description="initial concentration cytoplasmic IL-18">0</cytoplasmic_IL_18>	
+
+				<external_IL_18 type="double" units="a.u. of concentration"
+					description="initial concentration external IL-18">0</external_IL_18>	
+
+				<cytoplasmic_volume type="double" units="a.u. of volume"
+					description="cytoplasmic cell volume">1</cytoplasmic_volume>
+					
+				<cell_pyroptosis_flag type="int" units="dimensionless"
+					description="bool for pyropotosis">0</cell_pyroptosis_flag>
+				
+				
 				<!-- for the immune model --> 
 				<TCell_contact_time type="double" units="min"
 					description="tracks total contact time with CD8 T cells">0.0</TCell_contact_time>
@@ -687,7 +794,26 @@
 			
 			<immune_z_offset type="double" units="micron" 
 				description="immune cell position over the epithelium">0</immune_z_offset>
-
+			
+			<!-- (Michael) added parameters for external_immune-->
+			<TC_death_rate type="double" units="cells/min"
+				description="TC death rate">0.0000014</TC_death_rate>
+			<max_activation_TC type="double" units="cells/min"
+				description="max activation TC">0.0024</max_activation_TC>
+			<half_max_activation_TC type="double" units="cells"
+				description="half max activation TC">2000</half_max_activation_TC>
+			<max_clearance_TC type="double" units="cells/min"
+				description="max clearance TC">0.0007</max_clearance_TC>
+			<half_max_clearance_TC type="double" units="cells"
+				description="half max clearance TC">1</half_max_clearance_TC>
+			<TC_population_threshold type="double" units="cells"
+				description="TC population threshold">10</TC_population_threshold>
+			<T_Cell_Recruitment type="double" units="cells/min"
+				description="T cell recruitment rate to tissue">0.0001</T_Cell_Recruitment>
+			<DM_decay type="double" units="cells/min"
+				description="DM decay rate">0.00035</DM_decay>
+			<!-- (Michael) added parameters for external_immune-->
+			
 			<macrophage_max_recruitment_rate type="double" units="cells/min/micron^3"
 				description="max macrophage recruitment rate (for saturated signal)">4e-9</macrophage_max_recruitment_rate> <!-- 4e-9 debug -->
 			<macrophage_recruitment_min_signal type="double" units="substrate/micron^3"
@@ -711,7 +837,7 @@
 		
 		<div_initialization type="divider" description="---Initialization Options--"/>
 			<multiplicity_of_infection type="double" units="none" 
-				description="multiplicity of infection: virions/cells at t=0">0.1</multiplicity_of_infection> <!-- 0.01 debug -->
+				description="multiplicity of infection: virions/cells at t=0">1</multiplicity_of_infection> <!-- 0.01 debug -->
 			<use_single_infected_cell type="bool" units="none" 
 				description="Infect center cell with one virion (overrides MOI)">false</use_single_infected_cell>
 			
@@ -723,7 +849,7 @@
 				description="initial number of neutrophils">0</number_of_neutrophils>
 		<!-- (Adrianne) initial number of DCs in the lung -->
 			<number_of_DCs type="int" units="none" 
-				description="initial number of Dendritic Cells">50</number_of_DCs> <!-- needs more investigation, some sources say 100 per mm^2 -->
+				description="initial number of Dendritic Cells">30</number_of_DCs> <!-- needs more investigation, some sources say 100 per mm^2 -->
 			
 			<perecentage_tissue_vascularized units="percentage" type="double"
 				description="percentage of tissue sitting above blood vessels">8.8</perecentage_tissue_vascularized>			
@@ -746,11 +872,16 @@
 				description="color of activated macrophage">fuchsia</activated_macrophage_color>
 		<!-- (Adrianne) added a macrophage exhaustion colouring - when macrophages have eaten above their threshold and are exhausted -->
 			<exhausted_macrophage_color type="string" 
-				description="color of activated macrophage">purple</exhausted_macrophage_color>
+				description="color of exhausted macrophage">purple</exhausted_macrophage_color>
+		<!-- (Adrianne) added a macrophage hyperactived colouring - when macrophages have interacted with T cell and beoome hyperactivated and can kill infected cells -->
+			<hyperactivated_macrophage_color type="string" 
+				description="color of hyperactivated macrophage">paleturquoise</hyperactivated_macrophage_color>
 			<Neutrophil_color type="string" description="neutrophil color">cyan</Neutrophil_color>
-		<!-- (Adrianne) added a DC color -->
+		<!-- (Adrianne) adding DC color for naive and active  -->
 			<DC_color type="string" 
-				description="DC color">orange</DC_color>
+				description="DC color">sandybrown</DC_color>
+			<activated_DC_color type="string" 
+				description="DC color">orangered</activated_DC_color>
 		
 	</user_parameters>
 	

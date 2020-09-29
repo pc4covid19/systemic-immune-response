@@ -116,11 +116,7 @@ void internal_virus_model( Cell* pCell, Phenotype& phenotype, double dt )
 		pCell->custom_data["virion_export_rate" ] * pCell->custom_data[nA_internal]; 
  
 	// copy data from custom variables to "internalized variables" 
-	
-/*	
-	phenotype.molecular.internalized_total_substrates[nV_external] = 
-		pCell->custom_data[nV_internal];
-*/		
+			
 	phenotype.molecular.internalized_total_substrates[nA_external] = 
 		pCell->custom_data[nA_internal];	
 	
